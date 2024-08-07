@@ -1,2 +1,15 @@
-# main-db
+# Main Database Composer
 Multiple dockerized all-purpose databases for my projects local development
+
+## Execution
+
+Run the `create_db.sh` script with the following command on project root.
+
+> bash scripts/create_db.sh `database name`
+
+## Validating
+
+Run the `find_db.sh` script with the following command on project root.
+
+> bash scripts/find_db.sh `database name`
+

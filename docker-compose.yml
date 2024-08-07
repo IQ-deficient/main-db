@@ -1,0 +1,53 @@
+services:
+  mysql:
+    image: mysql:latest
+    container_name: mysql${DB_NAME_SUFFIX}
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - db_network
+    ports:
+      - "3306:3306"
+
+  postgres:
+    image: postgres:13
+    container_name: postgres${DB_NAME_SUFFIX}
+    environment:
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - db_network
+    ports:
+      - "5432:5432"
+
+  mongo:
+    image: mongo:4.4
+    container_name: mongo${DB_NAME_SUFFIX}
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - db_network
+    ports:
+      - "27017:27017"
+
+  redis:
+    image: redis:6.2
+    container_name: redis${DB_NAME_SUFFIX}
+    volumes:
+      - redis_data:/data
+    networks:
+      - db_network
+    ports:
+      - "6379:6379"
+
+networks:
+  db_network:
+
+volumes:
+  mysql_data:
+  postgres_data:
+  mongo_data:
+  redis_data:
