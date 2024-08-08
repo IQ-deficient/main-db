@@ -9,11 +9,11 @@ Create a `.env` file on project root, copy `.env.example` into it and update var
 
 Run the `create_db.sh` script with the following command on project root.
 
-> bash scripts/create_db.sh `database name`
+> bash scripts/create_db.sh `database name` --db:mysql,postgres,mongo
 
 ## Validating
 
 Run the `find_db.sh` script with the following command on project root.
 
-> bash scripts/find_db.sh `database name`
+> bash scripts/find_db.sh `database name` --db:mysql,postgres,mongo
 

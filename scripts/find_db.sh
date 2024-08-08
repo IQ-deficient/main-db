@@ -20,8 +20,8 @@ DB_NAME=$1
 DB_ENGINES="mysql,postgres,mongo"  # Default to all databases
 
 # Parse optional parameters
-if [ "$2" == "--db" ] && [ -n "$3" ]; then
-  DB_ENGINES=$3
+if [[ "$2" == --db=* ]]; then
+  DB_ENGINES="${2#--db=}"
 fi
 
 # Function to check database in MySQL
@@ -74,6 +74,7 @@ for ENGINE in "${ENGINES[@]}"; do
       echo "Unknown database engine: $ENGINE"
       ;;
   esac
+  echo "------------------------------------------------------------"
 done
 
 echo "Database '$DB_NAME' verification completed for specified engines."
