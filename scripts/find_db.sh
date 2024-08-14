@@ -7,7 +7,7 @@ set +o allexport
 
 # Function to display usage information
 usage() {
-  echo "Usage: $0 <database_name> [--db:mysql,postgres,mongo]"
+  echo "Usage: $0 <database_name> [--db=mysql,postgres,mongo]"
   exit 1
 }
 
@@ -20,18 +20,26 @@ DB_NAME=$1
 DB_ENGINES="mysql,postgres,mongo"  # Default to all databases
 
 # Parse optional parameters
-if [[ "$2" == --db=* ]]; then
-  DB_ENGINES="${2#--db=}"
-fi
+while [[ $# -gt 0 ]]; do
+  case $1 in
+    --db=*)
+      DB_ENGINES="${1#--db=}"
+      ;;
+    *)
+      # Unknown option or positional argument (skip)
+      ;;
+  esac
+  shift
+done
 
 # Function to check database in MySQL
 check_mysql_db() {
   echo "Checking database '$DB_NAME' in MySQL..."
   RESULT=$(docker exec -i mysql"${DB_NAME_SUFFIX}" mysql -uroot -p"${DB_PASSWORD}" -e "SHOW DATABASES LIKE '$DB_NAME';" | awk '/^'"$DB_NAME"'$/ {print $1}')
   if [ "$RESULT" == "$DB_NAME" ]; then
-    echo "Database '$DB_NAME' exists in MySQL."
+    echo "> Database '$DB_NAME' EXISTS in MySQL."
   else
-    echo "Database '$DB_NAME' does not exist in MySQL."
+    echo "> Database '$DB_NAME' DOES NOT EXIST in MySQL."
   fi
 }
 
@@ -40,9 +48,9 @@ check_postgres_db() {
   echo "Checking database '$DB_NAME' in PostgreSQL..."
   RESULT=$(docker exec -i postgres"${DB_NAME_SUFFIX}" psql -U postgres -tAc "SELECT 1 FROM pg_database WHERE datname='$DB_NAME';")
   if [ "$RESULT" == "1" ]; then
-    echo "Database '$DB_NAME' exists in PostgreSQL."
+    echo "> Database '$DB_NAME' EXISTS in PostgreSQL."
   else
-    echo "Database '$DB_NAME' does not exist in PostgreSQL."
+    echo "> Database '$DB_NAME' DOES NOT EXIST in PostgreSQL."
   fi
 }
 
@@ -51,9 +59,9 @@ check_mongo_db() {
   echo "Checking database '$DB_NAME' in MongoDB..."
   RESULT=$(docker exec -i mongo"${DB_NAME_SUFFIX}" mongo --eval "db.adminCommand('listDatabases').databases" | grep "$DB_NAME")
   if [[ "$RESULT" == *"$DB_NAME"* ]]; then
-    echo "Database '$DB_NAME' exists in MongoDB."
+    echo "> Database '$DB_NAME' EXISTS in MongoDB."
   else
-    echo "Database '$DB_NAME' does not exist in MongoDB."
+    echo "> Database '$DB_NAME' DOES NOT EXIST in MongoDB."
   fi
 }
 

@@ -7,7 +7,7 @@ set +o allexport
 
 # Function to display usage information
 usage() {
-  echo "Usage: $0 <database_name> [--db:mysql,postgres,mongo]"
+  echo "Usage: $0 <database_name> [--db=mysql,postgres,mongo]"
   exit 1
 }
 
@@ -26,19 +26,19 @@ fi
 
 # Function to create database in MySQL
 create_mysql_db() {
-  echo "Creating database '$DB_NAME' in MySQL..."
+  echo "> Creating database '$DB_NAME' in MySQL..."
   docker exec -i mysql"${DB_NAME_SUFFIX}" mysql -uroot -p"${DB_PASSWORD}" -e "CREATE DATABASE IF NOT EXISTS \`$DB_NAME\`;"
 }
 
 # Function to create database in PostgreSQL
 create_postgres_db() {
-  echo "Creating database '$DB_NAME' in PostgreSQL..."
+  echo "> Creating database '$DB_NAME' in PostgreSQL..."
   docker exec -i postgres"${DB_NAME_SUFFIX}" psql -U postgres -c "CREATE DATABASE \"$DB_NAME\";"
 }
 
 # Function to create database in MongoDB
 create_mongo_db() {
-  echo "Creating database '$DB_NAME' in MongoDB..."
+  echo "> Creating database '$DB_NAME' in MongoDB..."
   docker exec -i mongo"${DB_NAME_SUFFIX}" mongo --eval "db.getSiblingDB('$DB_NAME').createCollection('dummyCollection');"
 }
 
