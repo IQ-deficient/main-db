@@ -35,7 +35,9 @@ done
 # Function to check database in MySQL
 check_mysql_db() {
   echo "Checking database '$DB_NAME' in MySQL..."
-  RESULT=$(docker exec -i mysql"${DB_NAME_SUFFIX}" mysql -uroot -p"${DB_PASSWORD}" -e "SHOW DATABASES LIKE '$DB_NAME';" | awk '/^'"$DB_NAME"'$/ {print $1}')
+
+  RESULT=$(docker exec -i mysql"${DB_NAME_SUFFIX}" mysql -u root -p"${ADMIN_DB_PASSWORD}" -e "SHOW DATABASES LIKE '$DB_NAME';" | awk '/^'"$DB_NAME"'$/ {print $1}')
+
   if [ "$RESULT" == "$DB_NAME" ]; then
     echo "> Database '$DB_NAME' EXISTS in MySQL."
   else
@@ -46,7 +48,9 @@ check_mysql_db() {
 # Function to check database in PostgreSQL
 check_postgres_db() {
   echo "Checking database '$DB_NAME' in PostgreSQL..."
+
   RESULT=$(docker exec -i postgres"${DB_NAME_SUFFIX}" psql -U postgres -tAc "SELECT 1 FROM pg_database WHERE datname='$DB_NAME';")
+
   if [ "$RESULT" == "1" ]; then
     echo "> Database '$DB_NAME' EXISTS in PostgreSQL."
   else
@@ -57,7 +61,9 @@ check_postgres_db() {
 # Function to check database in MongoDB
 check_mongo_db() {
   echo "Checking database '$DB_NAME' in MongoDB..."
-  RESULT=$(docker exec -i mongo"${DB_NAME_SUFFIX}" mongo --eval "db.adminCommand('listDatabases').databases" | grep "$DB_NAME")
+
+  RESULT=$(docker exec -i mongo"${DB_NAME_SUFFIX}" mongosh --username "$ADMIN_DB_USERNAME" --password "$ADMIN_DB_PASSWORD" --authenticationDatabase "admin" --eval "db.adminCommand('listDatabases').databases" | grep "$DB_NAME")
+
   if [[ "$RESULT" == *"$DB_NAME"* ]]; then
     echo "> Database '$DB_NAME' EXISTS in MongoDB."
   else
