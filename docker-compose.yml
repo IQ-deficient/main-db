@@ -46,6 +46,8 @@ services:
     ports:
       - "6379:6379"
 
+  # todo: add mariadb
+
 networks:
   db_network:
 
