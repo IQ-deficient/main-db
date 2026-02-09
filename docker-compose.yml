@@ -1,6 +1,6 @@
 services:
   mysql:
-    image: mysql:latest
+    image: mysql:9.6.0
     container_name: mysql${DB_NAME_SUFFIX}
     environment:
       MYSQL_ROOT_PASSWORD: ${ADMIN_DB_PASSWORD}
@@ -12,7 +12,7 @@ services:
       - "3306:3306"
 
   postgres:
-    image: postgres:latest
+    image: postgres:17.7
     container_name: postgres${DB_NAME_SUFFIX}
     environment:
       POSTGRES_PASSWORD: ${ADMIN_DB_PASSWORD}
@@ -24,7 +24,7 @@ services:
       - "5432:5432"
 
   mongo:
-    image: mongo:latest
+    image: mongo:8.2.4
     container_name: mongo${DB_NAME_SUFFIX}
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${ADMIN_DB_USERNAME}
@@ -37,7 +37,7 @@ services:
       - "27017:27017"
 
   redis:
-    image: redis:latest
+    image: redis:8.4.0
     container_name: redis${DB_NAME_SUFFIX}
     volumes:
       - redis_data:/data
