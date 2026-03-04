@@ -6,7 +6,7 @@ Run and manage multiple databases in a containerized environment. Use one stack 
 
 | Service    | Image         | Port  | Per-project DB creation |
 | ---------- | ------------- | ----- | ----------------------- |
-| MySQL      | mysql:9.6.0   | 3305  | Yes (`create_db.sh`)    |
+| MySQL      | mysql:9.6.0   | 3306  | Yes                     |
 | PostgreSQL | postgres:17.7 | 5432  | Yes                     |
 | MongoDB    | mongo:8.2.4   | 27017 | Yes                     |
 | Redis      | redis:8.4.0   | 6379  | No (single instance)    |
@@ -17,6 +17,7 @@ Containers use `restart: unless-stopped` so the database service stays running a
 
 1. Copy `.env.example` to `.env` in the project root and set:
    - **ADMIN_DB_USERNAME** / **ADMIN_DB_PASSWORD** — root/admin credentials for the servers (used by scripts and by you for admin access).
+   - **PORT_HOST_PREFIX** — by default `127.0.0.1:` so ports bind to localhost only. Set to empty in `.env` to listen on all interfaces (e.g. for LAN access).
    - **DB_NAME_SUFFIX** — suffix for container names (e.g. `-main` → `mysql-main`). Change if you run multiple stacks.
    - **DB_USERNAME** / **DB_PASSWORD** — default credentials for each new database; override per run with `--username` and `--password`.
 
