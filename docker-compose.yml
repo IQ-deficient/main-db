@@ -2,6 +2,7 @@ services:
   mysql:
     image: mysql:9.6.0
     container_name: mysql${DB_NAME_SUFFIX}
+    restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: ${ADMIN_DB_PASSWORD}
     volumes:
@@ -10,10 +11,17 @@ services:
       - db_network
     ports:
       - "3306:3306"
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -uroot -p\"$$MYSQL_ROOT_PASSWORD\" || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
 
   postgres:
     image: postgres:17.7
     container_name: postgres${DB_NAME_SUFFIX}
+    restart: unless-stopped
     environment:
       POSTGRES_PASSWORD: ${ADMIN_DB_PASSWORD}
     volumes:
@@ -22,10 +30,17 @@ services:
       - db_network
     ports:
       - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
 
   mongo:
     image: mongo:8.2.4
     container_name: mongo${DB_NAME_SUFFIX}
+    restart: unless-stopped
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${ADMIN_DB_USERNAME}
       MONGO_INITDB_ROOT_PASSWORD: ${ADMIN_DB_PASSWORD}
@@ -35,18 +50,28 @@ services:
       - db_network
     ports:
       - "27017:27017"
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
 
   redis:
     image: redis:8.4.0
     container_name: redis${DB_NAME_SUFFIX}
+    restart: unless-stopped
     volumes:
       - redis_data:/data
     networks:
       - db_network
     ports:
       - "6379:6379"
-
-  # todo: add mariadb
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
 
 networks:
   db_network:
